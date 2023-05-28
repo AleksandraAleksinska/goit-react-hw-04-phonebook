@@ -26,6 +26,8 @@ export class App extends Component {
   
   handleFilterChange = (e) => {
     this.setState({filter: e.target.value});
+
+    
     
   }
 
