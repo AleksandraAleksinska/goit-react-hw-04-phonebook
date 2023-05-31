@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 export class SearchingFilter extends Component {
   render() {
 
-    const {onFilterChange} = this.props;
+    const { onFilterChange } = this.props;
 
     return (
         <label>

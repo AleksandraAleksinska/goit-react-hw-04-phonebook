@@ -1,14 +1,17 @@
-import React, { Component } from 'react'
 
-export class ContactListItem extends Component {
-  render() {
+// import React, { Component } from 'react'
 
-    const { name, number } = this.props;
+// export class ContactListItem extends Component {
+//   render() {
+
+//     const { name, number, deleteContact } = this.props;
     
-    return (
-        <div>{name}: {number} <button type='button' >Delete</button> </div>
-    )
-  }
-}
+//     return (
+      
+//       <li>{name}: {number} <button type='button' onClick={deleteContact}>Delete</button> </li>
+        
+//     )
+//   }
+// }
 
-export default ContactListItem
+// export default ContactListItem
