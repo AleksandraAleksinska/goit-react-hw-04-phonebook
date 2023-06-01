@@ -1,17 +1,19 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
+import css from './ContactForm.module.css'
 
-export class ContactForm extends Component {
+export default class ContactForm extends Component {
 
     
   render() {
 
-    const { onFormSubmit, onNameChange, onNumberChange} = this.props
+    const { onFormSubmit, onChange} = this.props
     
     return (
-        <form onSubmit={onFormSubmit}>        
-        <label>
+        <form className={css.form} onSubmit={onFormSubmit}>        
+        <label className={css.formLabel}>
           Name 
-          <input onChange={onNameChange}
+          <input onChange={onChange}
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -19,9 +21,9 @@ export class ContactForm extends Component {
             required
           />
         </label>
-        <label>
+        <label className={css.formLabel}>
           Number 
-          <input onChange={onNumberChange}
+          <input onChange={onChange}
             type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -29,10 +31,13 @@ export class ContactForm extends Component {
             required
           />
         </label>
-        <button type='submit'>Add contact</button>
+        <button className={css.formButton}type='submit'>Add contact</button>
       </form>
     )
   }
 }
 
-export default ContactForm
+ContactForm.propTypes = {
+  onFormSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
+}

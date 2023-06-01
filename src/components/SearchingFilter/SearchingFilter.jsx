@@ -1,12 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
+import css from'./SearchingFilter.module.css'
 
-export class SearchingFilter extends Component {
+export default class SearchingFilter extends Component {
+
   render() {
 
     const { onFilterChange } = this.props;
-
+    
     return (
-        <label>
+        <label className={css.formLabel} >
         Find contacts by name
         <input onChange={onFilterChange}
           type="text"
@@ -18,4 +21,6 @@ export class SearchingFilter extends Component {
   }
 }
 
-export default SearchingFilter
+SearchingFilter.propTypes = {
+  onFilterChange: PropTypes.func.isRequired
+}

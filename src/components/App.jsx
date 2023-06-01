@@ -19,60 +19,28 @@ export class App extends Component {
     {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'}],
     name: '',
     filter: '',
-    number: '',
-    list: []
+    number: ''    
   }
 
-  
-
-  handleNameChange = (e) => {
-    this.setState({name: e.target.value});
-    
-  }
-
-  handleNumberChange = (e) => {
-    this.setState({number: e.target.value})
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value })
   }
   
   handleFilterChange = _.debounce((e) => {
+    this.setState({filter: e.target.value})   
+   }, 300)
     
-    const { contacts } = this.state;
-    
-    const filter = e.target.value;
+  getFilteredContacts = () => {
+    const { contacts, filter } = this.state
+    const filteredContacts = [...contacts];
 
-    const filteredContacts = contacts.filter(contact => {
-
-      if (filter ==='') {         
-        return contacts
-
-      } else {
-        
-      return contact.name.toLowerCase().includes(filter.toLowerCase())}
-    
-    })
-    
-    this.setState({
-      filter: filter,
-      contacts: filteredContacts
-      
-    })
-
-   console.log(filteredContacts)
-    
-    }, 300)
-    
-    // handleFilterChange = _.debounce((e) => {
-    
-    //   this.setState({filter: e.target.value})
-      
-    //   }, 300)  
-    
+    return filter ? (filteredContacts.filter(contact => contact.name.toLowerCase().includes(filter.toLocaleLowerCase()))) : contacts 
+  }
   
-
   handleSubmit = (e) => {
     e.preventDefault();
-    const { name, number, contacts} = this.state; 
-    
+    const { name, number, contacts} = this.state;     
 
     if(contacts.some(contact => contact.name === name)) {
       alert(name+' is already in contacts');
@@ -84,39 +52,32 @@ export class App extends Component {
         id: nanoid()
       }
     ]});
-    }
-    
+    }    
   }
   
   deleteHandler = (id) => {
-
     const { contacts } = this.state
     
     const contactsAfterDelete = contacts.filter(contact => contact.id !== id)
-    this.setState({contacts: contactsAfterDelete})
-    
+    this.setState({contacts: contactsAfterDelete})    
   }
 
   render() {  
-    
     
     return (
       <Fragment>
         <h2>Phonebook</h2>
         <ContactForm 
           onFormSubmit={this.handleSubmit}
-          onNameChange={this.handleNameChange}
-          onNumberChange={this.handleNumberChange}
+          onChange={this.handleChange}
         />
         <h2>Contacts</h2>
         <SearchingFilter 
           onFilterChange={this.handleFilterChange}
         />
         <ContactList 
-          contacts={this.state.contacts}
-          deleteContact={this.deleteHandler}
-          
-          
+          contacts={this.getFilteredContacts()}
+          deleteContact={this.deleteHandler}  
         /> 
       </Fragment>
     )
