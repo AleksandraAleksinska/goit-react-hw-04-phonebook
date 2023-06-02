@@ -37,10 +37,12 @@ export class App extends Component {
 
     return filter ? (filteredContacts.filter(contact => contact.name.toLowerCase().includes(filter.toLocaleLowerCase()))) : contacts 
   }
+
   
   handleSubmit = (e) => {
     e.preventDefault();
-    const { name, number, contacts} = this.state;     
+    const { name, number, contacts} = this.state; 
+    const form = e.currentTarget;    
 
     if(contacts.some(contact => contact.name === name)) {
       alert(name+' is already in contacts');
@@ -52,7 +54,9 @@ export class App extends Component {
         id: nanoid()
       }
     ]});
-    }    
+    };
+        
+    form.reset()
   }
   
   deleteHandler = (id) => {
