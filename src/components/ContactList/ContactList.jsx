@@ -1,31 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { nanoid } from 'nanoid';
 import PropTypes from "prop-types";
 import css from './ContactList.module.css'
 
 
-export default class ContactList extends Component {
- 
 
-  render() {
+const ContactList = ({ contacts, deleteContact }) => {
+  return (
+    <ul>            
+      { contacts.map((contact) => 
 
-    const { contacts, deleteContact } = this.props;
-    
-    return (
-
-        <ul>            
-            { contacts.map((contact) => 
-
-              <li className={css.listItem} key={nanoid()}>- {contact.name}: {contact.number} <button className={css.formButton} type='button' onClick={()=>deleteContact(contact.id)}>Delete</button> </li>
-
-             ) }    
+        <li className={css.listItem} key={nanoid()}>- {contact.name}: {contact.number} <button className={css.formButton} type='button' onClick={()=>deleteContact(contact.id)}>Delete</button> </li>) }    
         
-        </ul>
-    )
-  }
+    </ul>
+  )
 }
 
-ContactList.propTypes ={
+export default ContactList
+
+ContactList.propTypes = {
   contact: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     number: PropTypes.string.isRequired,

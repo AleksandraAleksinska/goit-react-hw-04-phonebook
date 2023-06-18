@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Fragment } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
@@ -10,82 +10,104 @@ const _ = require('lodash');
 
 
 
-export class App extends Component {
+const App = () => {
 
-  state = {
-    contacts: [{id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
-    {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
-    {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
-    {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'}],
+  const [contacts, setContacts] = useState([]);
+
+  
+  const [filter, setFilter] = useState('');
+  const [ , setState] = useState({
     name: '',
-    filter: '',
-    number: ''    
-  }
+    number: ''
+  })
 
-  handleChange = (e) => {
+  useEffect(() => {
+    const contactList = JSON.parse(localStorage.getItem('contacts'));
+     if (!contactList) {
+       localStorage.setItem('contacts', JSON.stringify([]));
+     } else {
+       setContacts(contactList);
+     }
+  },[])
+
+  useEffect(() => {
+    
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+          
+  }, [contacts])
+
+
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value })
+    setState({ [name]: value });
+    
   }
-  
-  handleFilterChange = _.debounce((e) => {
-    this.setState({filter: e.target.value})   
+
+  const handleFilterChange = _.debounce((e) => {
+      setFilter(e.target.value)   
    }, 300)
-    
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state
-    const filteredContacts = [...contacts];
 
-    return filter ? (filteredContacts.filter(contact => contact.name.toLowerCase().includes(filter.toLocaleLowerCase()))) : contacts 
-  }
-
-  
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const { name, number, contacts} = this.state; 
-    const form = e.currentTarget;    
-
-    if(contacts.some(contact => contact.name === name)) {
-      alert(name+' is already in contacts');
-    }
-    else {
-      this.setState({contacts: [...contacts, {
-        name: name,
-        number: number,
-        id: nanoid()
-      }
-    ]});
-    };
+  const getFilteredContacts = () => {
+       
+      !JSON.parse(localStorage.getItem('contacts')) && localStorage.setItem('contacts', JSON.stringify([]));
         
-    form.reset()
-  }
+       const contactList = JSON.parse(localStorage.getItem('contacts'));
+       const filteredContacts = [...contactList];
+       return filter ? (filteredContacts.filter(contact => contact.name.toLowerCase().includes(filter.toLocaleLowerCase()))) : contactList; 
+    }
   
-  deleteHandler = (id) => {
-    const { contacts } = this.state
+    const sendContactsToLocalStorage = (list) => localStorage.setItem('contacts', JSON.stringify(list));
     
-    const contactsAfterDelete = contacts.filter(contact => contact.id !== id)
-    this.setState({contacts: contactsAfterDelete})    
-  }
+    
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+  
+      if (contacts.some((contact) => contact.name === form.elements.name.value)) {
+        alert(form.elements.name.value + ' is already in contacts');
+      } else {
+        const contactsAfterAdd = [
+          ...contacts,
+          {
+            name: form.elements.name.value,
+            number: form.elements.number.value,
+            id: nanoid(),
+          },
+        ];
+        setContacts(contactsAfterAdd);
+        sendContactsToLocalStorage(contactsAfterAdd);
+      }
+  
+      form.reset();
+    };
 
-  render() {  
+  const deleteHandler = (id) => {
+      const contactsAfterDelete = contacts.filter(contact => contact.id !== id);
+      setContacts(contactsAfterDelete);
+      sendContactsToLocalStorage(contactsAfterDelete);  
+      
+    }
     
-    return (
-      <Fragment>
-        <h2>Phonebook</h2>
-        <ContactForm 
-          onFormSubmit={this.handleSubmit}
-          onChange={this.handleChange}
-        />
-        <h2>Contacts</h2>
-        <SearchingFilter 
-          onFilterChange={this.handleFilterChange}
-        />
-        <ContactList 
-          contacts={this.getFilteredContacts()}
-          deleteContact={this.deleteHandler}  
-        /> 
-      </Fragment>
-    )
-  }
+
+  return (
+    <Fragment>
+         <h2>Phonebook</h2>
+         <ContactForm 
+           onFormSubmit={handleSubmit}
+           onChange={handleChange}
+         />
+         <h2>Contacts</h2>
+         <SearchingFilter 
+           onFilterChange={handleFilterChange}
+         />
+         <ContactList 
+           contacts={getFilteredContacts()}
+           deleteContact={deleteHandler}  
+         /> 
+       </Fragment>
+  )
 }
 
 export default App
+

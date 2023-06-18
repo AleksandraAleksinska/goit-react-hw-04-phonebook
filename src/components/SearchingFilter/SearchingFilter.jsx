@@ -1,15 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from "prop-types";
 import css from'./SearchingFilter.module.css'
 
-export default class SearchingFilter extends Component {
 
-  render() {
-
-    const { onFilterChange } = this.props;
-    
-    return (
-        <label className={css.formLabel} >
+const SearchingFilter = ({ onFilterChange }) => {
+  return (
+    <label className={css.formLabel} >
         Find contacts by name
         <input onChange={onFilterChange}
           type="text"
@@ -17,9 +13,10 @@ export default class SearchingFilter extends Component {
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         />
         </label>
-    )
-  }
+  )
 }
+
+export default SearchingFilter
 
 SearchingFilter.propTypes = {
   onFilterChange: PropTypes.func.isRequired
