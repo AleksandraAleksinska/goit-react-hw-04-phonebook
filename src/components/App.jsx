@@ -22,12 +22,17 @@ const App = () => {
   })
 
   useEffect(() => {
-    const contactList = JSON.parse(localStorage.getItem('contacts'));
-     if (!contactList) {
-       localStorage.setItem('contacts', JSON.stringify([]));
-     } else {
-       setContacts(contactList);
-     }
+
+    const contactsFromLocalStorage = localStorage.getItem('contacts')
+
+    if(!contactsFromLocalStorage) {
+      localStorage.setItem('contacts', JSON.stringify([]));
+    }
+    else {
+      const contactList = JSON.parse(contactsFromLocalStorage);
+      setContacts(contactList);
+    }
+
   },[])
 
   useEffect(() => {
@@ -49,18 +54,13 @@ const App = () => {
    }, 300)
 
   const getFilteredContacts = () => {
-       
-      !JSON.parse(localStorage.getItem('contacts')) && localStorage.setItem('contacts', JSON.stringify([]));
-        
-       const contactList = JSON.parse(localStorage.getItem('contacts'));
-       const filteredContacts = [...contactList];
-       return filter ? (filteredContacts.filter(contact => contact.name.toLowerCase().includes(filter.toLocaleLowerCase()))) : contactList; 
+   
+       const filteredContacts = [...contacts];
+       return filter ? (filteredContacts.filter(contact => contact.name.toLowerCase().includes(filter.toLocaleLowerCase()))) : contacts; 
     }
   
-    const sendContactsToLocalStorage = (list) => localStorage.setItem('contacts', JSON.stringify(list));
     
-    
-    const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
       e.preventDefault();
       const form = e.currentTarget;
   
@@ -76,7 +76,6 @@ const App = () => {
           },
         ];
         setContacts(contactsAfterAdd);
-        sendContactsToLocalStorage(contactsAfterAdd);
       }
   
       form.reset();
@@ -85,8 +84,6 @@ const App = () => {
   const deleteHandler = (id) => {
       const contactsAfterDelete = contacts.filter(contact => contact.id !== id);
       setContacts(contactsAfterDelete);
-      sendContactsToLocalStorage(contactsAfterDelete);  
-      
     }
     
 
